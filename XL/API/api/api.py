@@ -57,7 +57,6 @@ def search(req):
 def genre(req):
 	params = get_params(req)
 	data = get_data(req)
-	print(data)
 	query = json.loads(data.get("query"))
 	page = int(params.get("page", 1))
 	if not query: return HttpResponseBadRequest()

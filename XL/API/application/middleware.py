@@ -14,6 +14,7 @@ def logging_middleware(get_response):
 			method=request.method,
 			status_code=response.status_code,
 			timestamp=getnow(),
+			ip_address=request.META.get("REMOTE_ADDR")
 		)
 		return response
 	return middleware
