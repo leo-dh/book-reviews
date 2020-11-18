@@ -1,0 +1,49 @@
+.small .ant-rate-star svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* .ant-rate-star.ant-rate-star-zero svg {
+  color: black;
+} */
+.fade-enter {
+  opacity: 0;
+}
+.fade-exit {
+  opacity: 1;
+}
+.fade-enter-active {
+  opacity: 1;
+}
+.fade-exit-active {
+  opacity: 0;
+}
+.fade-enter-active,
+.fade-exit-active {
+  transition: opacity 500ms;
+}
+
+.ant-list-item-meta-title .link-hover {
+  color: #1890ff;
+  transition: all 0.3s ease;
+}
+.ant-list-item-meta-title .link-hover:hover {
+  color: #40a9ff;
+}
+
+.lineClamp {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  word-break: break-all;
+}
+
+.ant-tag.tag-hover a {
+  transition: all 0.2s ease;
+}
+.ant-tag.tag-hover a:hover {
+  color: #1890ff;
+}

@@ -50,3 +50,9 @@ Metadata.collection.create_index([("title", TEXT), ("author", TEXT)], background
 Metadata.collection.create_index([("category", ASCENDING)], background=True)
 ```
 
+After Postgres Migrations, the following command needs to be run in order for
+django's ORM to properly generate primary_keys.
+
+```SQL
+SELECT setval(pg_get_serial_sequence('"reviews_review"','review_id'), coalesce(max("review_id"), 1), max("review_id") IS NOT null) FROM "reviews_review";
+```

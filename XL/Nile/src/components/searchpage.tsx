@@ -1,82 +1,120 @@
-import React, { useEffect, useState } from "react";
-import { Layout, Row, Col, Input, Card, Typography, List } from "antd";
-import logo from "../images/nile_dark.svg";
+import React, { useEffect, useState, useRef } from "react";
+import { Input, Card, Typography } from "antd";
 import { navigate } from "gatsby";
+import { useLocation } from "@reach/router";
 import { getSearchQuery } from "../services/api";
 import { IBook } from "../state/types";
+import usePrevious from "../hooks/usePrevious";
+import ResultList from "./ResultList";
 
+const { Search } = Input;
+const { Title } = Typography;
 
-const { Content } = Layout;
-const { Text } = Typography;
+interface QueryState {
+  pageNum: number;
+  queryString: string | null;
+}
 
-const LandingPage = (): React.FC => {
-	const [loading, setLoading] = useState<boolean>(false);
-	const [data, setData] = useState<IBook[]>([]);
-	const [query, setQuery] = useState<string>((new URLSearchParams(document.location.search.substring(1))).get("query"));
+const getQueryFromLocation = (searchString: string): QueryState => {
+  const matchResults = searchString.match(
+    /\?(?:page=([1-9][0-9]*)&)?query=(.*)/,
+  );
+  const queryString = matchResults?.[2] || null;
+  const pageNum = queryString ? Number(matchResults?.[1] || 1) : 0;
+  return {
+    pageNum,
+    queryString,
+  };
+};
 
-	if (!query.trim()) navigate(`/`);
+const LandingPage: React.FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [data, setData] = useState<{ books: IBook[]; totalCount: number }>({
+    books: [],
+    totalCount: 0,
+  });
+  const location = useLocation();
+  const [queryState, setQueryState] = useState<QueryState>(
+    getQueryFromLocation(decodeURI(location.search)),
+  );
 
-	const performQuery = async (query) => {
-		setLoading(true);
-		const result = await getSearchQuery(query);
-		if (result) setData(result);
-		console.log(result);
-		setLoading(false);
-	};
+  const prevQueryState = usePrevious<QueryState>(queryState);
+  const inputRef = useRef<Input>(null);
 
-	useEffect(() => {
-		if (!query) return;
-		performQuery(query);
-	}, [query]);
+  const performQuery = async (
+    { pageNum, queryString }: QueryState,
+    totalCount = 0,
+  ) => {
+    if (!queryString) return;
+    setLoading(true);
+    const result = await getSearchQuery(queryString, pageNum, totalCount);
+    if (result) {
+      setData(prevData => {
+        return {
+          books: result.books,
+          totalCount: totalCount ? result.totalCount || 0 : prevData.totalCount,
+        };
+      });
+    }
+    setLoading(false);
+  };
 
-	return (
-		<>
-		<Layout>
-		<Content style={{minHeight: "100vh"}}>
-		<div style={{display: "flex", justifyContent: "center", margin: "18px 0"}}>
-		<Row justify="center" align="middle" gutter={36} style={{width: "80%", minWidth: 450, maxWidth: 1280}}>
-			<Col xs={24} style={{textAlign: "center", marginTop: 36, margin: "18px 0"}}>
-			<img src={logo} style={{height: 120, cursor: "pointer"}} onClick={() => navigate(`/`)} />
-			</Col>
+  useEffect(() => {
+    const newQuery = getQueryFromLocation(decodeURI(location.search));
+    setQueryState(newQuery);
+  }, [location.search]);
 
-			<Col xs={24} style={{textAlign: "center", margin: "18px 0", width: "50%", minWidth: 450, maxWidth: 840}}>
-			<Input style={{fontSize: 24}} size="large" defaultValue={query} placeholder="🔍 Search for a book" autoFocus onPressEnter={(e) => {
-				if (e.currentTarget.getAttribute("value")) {
-					const value = e.currentTarget.getAttribute("value");
-					navigate(`/search?query=${value}`);
-					setQuery(value);
-				}
-			}} />
-			</Col>
+  useEffect(() => {
+    if (!queryState.queryString) return;
+    const totalCount =
+      prevQueryState?.queryString === queryState.queryString ? 0 : 1;
+    performQuery(queryState, totalCount);
+    inputRef.current?.setValue(queryState.queryString || "");
+  }, [queryState.pageNum, queryState.queryString]);
 
-			<Col xs={24} style={{margin: "18px 0"}}>
-			<Card>
-			<List
-				size="large"
-				dataSource={data}
-				renderItem={(item) => (
-					<a href={`http://amzn.com/${item.asin}`}>
-					<List.Item
-						key={item.asin}
-						extra={<img src={item.imUrl} />}
-						style={{cursor: "pointer"}}
-					>
-						<List.Item.Meta
-							title={<Text style={{maxWidth: "100%"}} ellipsis>{item.title}</Text>}
-							description={item.author}
-						/>
-					</List.Item>
-					</a>
-				)}
-			/>
-			</Card>
-			</Col>
-		</Row>
-		</div>
-		</Content>
-		</Layout>
-		</>
-	);
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "column",
+        margin: "18px 0",
+      }}
+    >
+      <Title level={1}>Search</Title>
+      <Search
+        style={{ fontSize: 24 }}
+        size="large"
+        ref={inputRef}
+        defaultValue={queryState.queryString || ""}
+        placeholder="Search with book title or author ... "
+        allowClear
+        enterButton
+        loading={loading}
+        onSearch={value => {
+          if (!value.trim()) return;
+          navigate(`/search?query=${encodeURI(value.trim())}`);
+        }}
+      />
+
+      <Card style={{ marginTop: "24px" }}>
+        <ResultList
+          pagination={{
+            onChange: page => {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+              navigate(`/search?page=${page}&query=${queryState.queryString}`);
+            },
+            pageSize: 20,
+            pageSizeOptions: [],
+            total: data.totalCount,
+            current: queryState.pageNum,
+          }}
+          dataSource={data.books}
+          loading={loading}
+        />
+      </Card>
+    </div>
+  );
 };
 
 export default LandingPage;

@@ -4,4 +4,20 @@
  * See: https://www.gatsbyjs.org/docs/node-apis/
  */
 
-// You can delete this file if you're not using it
+const { resolve } = require("path");
+
+exports.onCreatePage = async ({ actions: { createPage } }) => {
+  createPage({
+    path: `/book/:id`,
+    matchPath: `/book/:id`,
+    component: resolve("./src/templates/BookDetailsPage.tsx"),
+  });
+};
+
+exports.onCreateWebpackConfig = ({ getConfig, actions }) => {
+  if (getConfig().mode === "production") {
+    actions.setWebpackConfig({
+      devtool: false,
+    });
+  }
+};

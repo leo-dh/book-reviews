@@ -1,28 +1,80 @@
-import React from "react";
-import { Layout, Row, Col, Input, Card, Typography } from "antd";
-import logo from "../images/nile_dark.svg";
-import { navigate } from "gatsby";
+import React, { useState, useEffect } from "react";
+import { Typography, Button, Card } from "antd";
+import { IQueryResults } from "state/types";
+import { Link } from "gatsby";
+import ResultsList from "./ResultList";
+import { getAllBooks } from "../services/api";
 
+const { Title } = Typography;
 
-const { Content } = Layout;
-const { Text } = Typography;
+const LandingPage: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<IQueryResults>({ books: [], totalCount: 0 });
+  const [pageNum, setPageNum] = useState(0);
 
-const LandingPage = (): React.FC => {
-	return (
-		<>
-		<Layout>
-		<Content style={{minHeight: "100vh"}}>
-		<div style={{display: "flex", justifyContent: "center", margin: "18px 0"}}>
-		<Row justify="center" align="middle" gutter={36} style={{width: "50%", minWidth: 450, maxWidth: 840}}>
-			<Col xs={24} style={{textAlign: "center", marginTop: 36, margin: "18px 0"}}>
-			<img src={logo} style={{height: 120, cursor: "pointer"}} onClick={() => navigate(`/`)} />
-			</Col>
-		</Row>
-		</div>
-		</Content>
-		</Layout>
-		</>
-	);
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      const result = await getAllBooks(1, 1);
+      if (result) {
+        setData(result);
+        setPageNum(1);
+      }
+      setLoading(false);
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (pageNum === 0) return;
+    (async () => {
+      setLoading(true);
+      const result = await getAllBooks(pageNum);
+      if (result) {
+        setData(prevData => {
+          return {
+            books: result.books,
+            totalCount: prevData.totalCount,
+          };
+        });
+      }
+      setLoading(false);
+    })();
+  }, [pageNum]);
+
+  return (
+    <div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Title level={1} style={{ margin: 0 }}>
+          Books
+        </Title>
+        <Button type="primary">
+          <Link to="/new">Add Book</Link>
+        </Button>
+      </div>
+      <Card style={{ marginTop: "24px" }}>
+        <ResultsList
+          loading={loading}
+          dataSource={data.books}
+          pagination={{
+            onChange: page => {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+              setPageNum(page);
+            },
+            pageSize: 20,
+            pageSizeOptions: [],
+            total: data.totalCount,
+            current: pageNum,
+          }}
+        />
+      </Card>
+    </div>
+  );
 };
 
 export default LandingPage;

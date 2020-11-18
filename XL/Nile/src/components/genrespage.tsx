@@ -1,102 +1,117 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Row, Col, Input, Card, Typography, Tree, Button, Divider, List, Collapse } from "antd";
-import logo from "../images/nile_dark.svg";
-import { navigate } from "gatsby";
+import { Card, Tree, Button } from "antd";
+import { useLocation } from "@reach/router";
 import categories from "../../content/categories.json";
 import { getGenreQuery } from "../services/api";
 import { IBook } from "../state/types";
+import ResultList from "./ResultList";
 
+const LandingPage: React.FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
+  const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
+  const [data, setData] = useState<IBook[]>([]);
+  const [queryString, setQueryString] = useState<string>("");
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const location = useLocation();
 
-const { Content } = Layout;
-const { Text } = Typography;
+  const performQuery = async (pageNum = 1) => {
+    if (!checkedKeys.length) return;
+    setLoading(true);
+    const newQueryString = JSON.stringify(
+      checkedKeys.map(key => key.split(" / ")),
+    );
+    console.log(newQueryString);
+    if (queryString === newQueryString) {
+      const result = await getGenreQuery(newQueryString, pageNum);
+      if (result) setData(result.books);
+    } else {
+      setQueryString(newQueryString);
+      const result = await getGenreQuery(newQueryString, pageNum, 1);
+      console.log(result);
+      if (result) {
+        setData(result.books);
+        setTotalCount(result.totalCount || 0);
+      }
+    }
+    setLoading(false);
+  };
+  useEffect(() => {
+    const state = location.state as Record<string, any>;
+    if (!state) return;
+    if ("genre" in state) {
+      const key = (state.genre as string[]).join(" / ");
+      setCheckedKeys([key]);
+      (async () => {
+        setLoading(true);
+        const qs = JSON.stringify([key].map(k => k.split(" / ")));
+        console.log(qs);
+        setQueryString(qs);
+        const result = await getGenreQuery(qs, 1, 1);
+        console.log(result);
 
-const LandingPage = (): React.FC => {
-	const [loading, setLoading] = useState<boolean>(false);
-	const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
-	const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
-	const [data, setData] = useState<IBook[]>([]);
+        if (result) {
+          setData(result.books);
+          setTotalCount(result.totalCount || 0);
+        }
+        setLoading(false);
+      })();
+    }
+  }, []);
 
-	const leaves = checkedKeys.filter((key) => key[key.length - 1] === "|").map((key) => key.slice(0, key.length - 1));
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      <div style={{ display: "flex", flexDirection: "column", width: "300px" }}>
+        <Card>
+          <Tree
+            showIcon
+            checkable
+            selectable={false}
+            onExpand={keys => setExpandedKeys(keys as string[])}
+            expandedKeys={expandedKeys}
+            onCheck={keys => setCheckedKeys(keys as string[])}
+            onSelect={selectedKeys => {
+              console.log({ selectedKeys });
+            }}
+            checkedKeys={checkedKeys}
+            treeData={categories}
+            height={500}
+          />
+        </Card>
 
-	const performQuery = async () => {
-		if (!leaves.length) return;
-		setLoading(true);
-		const query = JSON.stringify(leaves.map((leaf) => leaf.split(" / ")));
-		const result = await getGenreQuery(query);
-		if (result) setData(result);
-		console.log(result);
-		setLoading(false);
-	};
-
-	return (
-		<>
-		<Layout>
-		<Content style={{minHeight: "100vh"}}>
-		<div style={{display: "flex", justifyContent: "center", margin: "18px 0"}}>
-		<Row justify="center" align="middle" gutter={36} style={{width: "80%", minWidth: 450, maxWidth: 1280}}>
-			<Col xs={24} style={{textAlign: "center", marginTop: 36, margin: "18px 0", width: "50%", minWidth: 450, maxWidth: 840}}>
-			<img src={logo} style={{height: 120, cursor: "pointer"}} onClick={() => navigate(`/`)} />
-			</Col>
-
-			<Col xs={24} style={{textAlign: "center", margin: "18px 0", width: "50%", minWidth: 450, maxWidth: 840}}>
-			<Button
-				type="primary"
-				block
-				style={{fontSize: 24, height: 60, borderRadius: 7}}
-				disabled={leaves.length === 0}
-				onClick={performQuery}
-			>Find</Button>
-			</Col>
-
-			<Col xs={24} style={{textAlign: "center", margin: "18px 0", width: "50%", minWidth: 450, maxWidth: 840}}>
-			<Card>
-			<Collapse defaultActiveKey={["genres"]}>
-			<Collapse.Panel header="Genres" key="genres">
-			<Tree
-				style={{fontSize: 18}}
-				showLine
-				showIcon
-				checkable
-				selectable={false}
-				onExpand={(keys) => setExpandedKeys(keys as string[])}
-				expandedKeys={expandedKeys}
-				onCheck={(keys) => setCheckedKeys(keys as string[])}
-				checkedKeys={checkedKeys}
-				treeData={categories}
-			/>
-			</Collapse.Panel>
-			</Collapse>
-			</Card>
-			</Col>
-
-			<Col xs={24} style={{textAlign: "center", margin: "18px 0"}}>
-			<Card>
-			<List
-				size="large"
-				dataSource={data}
-				renderItem={(item) => (
-					<a href={`http://amzn.com/${item.asin}`}>
-					<List.Item
-						key={item.asin}
-						extra={<img src={item.imUrl} />}
-						style={{cursor: "pointer"}}
-					>
-						<List.Item.Meta
-							title={<Text style={{maxWidth: "100%"}} ellipsis>{item.title}</Text>}
-							description={item.author}
-						/>
-					</List.Item>
-					</a>
-				)}
-			/>
-			</Card>
-			</Col>
-		</Row>
-		</div>
-		</Content>
-		</Layout>
-		</>
-	);
+        <Button
+          style={{ marginTop: "16px" }}
+          type="primary"
+          block
+          disabled={checkedKeys.length === 0}
+          onClick={() => performQuery()}
+          loading={loading}
+        >
+          {loading ? "Finding" : "Find"}
+        </Button>
+      </div>
+      <Card style={{ marginLeft: "24px", flex: 1 }}>
+        <ResultList
+          pagination={{
+            onChange: page => {
+              window.scrollTo({ top: 0, behavior: "auto" });
+              performQuery(page);
+            },
+            pageSize: 20,
+            pageSizeOptions: [],
+            total: totalCount,
+          }}
+          dataSource={data}
+          loading={loading && data.length === 0}
+        />
+      </Card>
+    </div>
+  );
 };
 
 export default LandingPage;

@@ -2,16 +2,20 @@ import React from "react";
 import { Provider } from "react-redux";
 import { store } from "../state/store";
 import BaseLayout from "../components/BaseLayout";
-import BooksPage from "../components/bookspage";
+import BookPage from "../components/BookPage";
 
-const Page: React.FC = () => {
+interface BookDetailsPageProps {
+  id: string;
+}
+
+const BookDetailsPage: React.FC<BookDetailsPageProps> = ({ id }) => {
   return (
     <Provider store={store}>
       <BaseLayout>
-        <BooksPage />
+        <BookPage id={id} />
       </BaseLayout>
     </Provider>
   );
 };
 
-export default Page;
+export default BookDetailsPage;
