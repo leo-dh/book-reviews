@@ -2,6 +2,7 @@ from django.urls import path
 from . import api
 
 urlpatterns = [
+	path("test", api.test),
     path("search", api.search),
     path("genre", api.genre),
     path("book/<str:book_id>", api.book),

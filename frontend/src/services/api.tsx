@@ -6,7 +6,11 @@ import {
   IQueryResults,
 } from "../state/types";
 
-const apiUrl = "http://127.0.0.1:8000/api";
+let apiUrl = "http://127.0.0.1:8000/api";
+if (typeof window !== 'undefined') {
+  const location = window.location;
+  apiUrl = `${location.protocol}//${location.host}:8000/api`;
+}
 
 interface IRequest {
   endpoint: string;

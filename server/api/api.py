@@ -19,7 +19,6 @@ from django.views.decorators.http import require_http_methods
 from documents.models import Log, Metadata
 from reviews.models import Review
 
-
 def generate_random_string(length: int) -> str:
     letters = string.ascii_uppercase + string.digits
     random_string = "".join(random.choice(letters) for _ in range(length))
@@ -57,6 +56,11 @@ def jsonify(data):
 
     return HttpResponse(json.dumps(data, default=dt_handler))
 
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def test(req):
+    return jsonify({"status": "OK"})
 
 @csrf_exempt
 @require_http_methods(["GET"])

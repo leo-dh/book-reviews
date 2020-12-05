@@ -1,7 +1,7 @@
 module.exports = {
   siteMetadata: {
-    title: `WorkClass`,
-    description: `Need an employee? WorkClass will help you find one in 24 hours!`,
+    title: ``,
+    description: ``,
     author: `@xl-s`,
   },
   plugins: [

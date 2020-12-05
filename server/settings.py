@@ -13,10 +13,13 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 from dotenv import load_dotenv
 load_dotenv()
+import pymysql
+
+pymysql.version_info = (1, 4, 0, "final", 0)
+pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -25,10 +28,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '9p#gnd%r^5(k9x!n0a$7zc25(g79xt*vw1$4)zc@pd4b4b%fsv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
+# STATICFILES_DIRS = ["public"]
 
 # Application definition
 
@@ -38,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     # 'django.contrib.sessions',
     # 'django.contrib.messages',
-    # 'django.contrib.staticfiles',
+    'django.contrib.staticfiles',
     'application',
     'reviews',
     'documents',
@@ -54,7 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'application.middleware.logging_middleware',
+    # 'application.middleware.logging_middleware',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -85,7 +89,7 @@ WSGI_APPLICATION = 'application.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'reviews',
         'USER': os.getenv('DB_REVIEWS_USER'),
         'PASSWORD': os.getenv('DB_REVIEWS_PASSWORD'),
