@@ -85,6 +85,7 @@ def generate_key_pair():
 		f.write(key_pair.key_material)
 	with open("/home/ubuntu/key_pair", "w+") as f:
 		f.write(key_pair.key_pair_id)
+	sp.run(["chmod", "600", ".ssh/id_rsa"])
 	print("Done")
 
 def create_security_groups():
@@ -164,6 +165,7 @@ def create_production_instances():
 				"instance_id": django_instance.id
 			}
 		}, indent="\t"))
+	sp.run(f"ssh-keyscan -H {django_instance.public_ip_address} >> .ssh/known_hosts", shell=True)
 	print("Done")
 
 def create_hadoop_instances(num_workers=HADOOP_WORKER_NODES):
@@ -188,6 +190,7 @@ def create_hadoop_instances(num_workers=HADOOP_WORKER_NODES):
 			"key_filename": f"/home/ubuntu/.ssh/id_rsa",
 			"instance_id": instance.id
 		} for ind, instance in enumerate(hadoop_instances)}, indent="\t"))
+	sp.run(f"ssh-keyscan -H {hadoop_instances[0].private_ip_address} >> .ssh/known_hosts", shell=True)
 	print("Done")
 
 def generate_environment():
