@@ -348,7 +348,7 @@ def run_analytics(ingest=True):
 	sp.run(["scp", "latest_pearson.txt", f"{production_hosts['django']['host']}:public/analytics/pearson.txt"])
 	sp.run(["scp", "latest_tfidf.txt", f"{production_hosts['django']['host']}:public/analytics/tfidf.txt"])
 	print("Done")
-	print(f"Analytics results available at {hadoop_hosts['hadoop.node.000']['host']}/analytics/pearson.txt and {hadoop_hosts['hadoop.node.000']['host']}/analytics/tfidf.txt")
+	print(f"Analytics results available at http://{production_hosts['django']['host']}/analytics/pearson.txt and http://{production_hosts['django']['host']}/analytics/tfidf.txt")
 
 	master.close()
 	django.close()
