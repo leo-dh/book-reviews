@@ -1,13 +1,7 @@
 import sys
 import re
 import math
-
-# import numpy
 from pyspark import SparkContext, SparkConf
-
-
-# from pyspark.mllib.feature import HashingTF, IDF
-
 
 def sep(line):
     words = line.split(",")
