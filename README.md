@@ -149,10 +149,10 @@ The launch script then runs the process flows for the production cluster and ana
 
 #### Analytics Task (Calculating Pearson Correlation) Flow
 
-1. Get the data in the reviews (format: "asin, review_text") and price data (format: "asin\tprice") in the form of a text file
+1. Get the data, reviews (format: "asin, review_text") and price (format: "asin\tprice"), in the form of 2 separate text files
 2. Remove punctuations from the review text and split the data into the form of (asin, review_text_list) and (asin, price)
 3. For reviews (asin, review_text_list), for each review, find the number of words then find the average review length for each book using reduceByKey
-4. Merge the reviews dff and the price dff using join by their asin key (format: asin, (average_review_length, price))
+4. Merge the reviews dff and the price dff using join by their asin key (format: (asin, (average_review_length, price)) )
 5. Filter out all values without either average_review_length or price
 6. Get the mean of the average_review_length and the mean of the price for each book using reduce
 7. Using the pearson correlation coefficient formula, calculate the coefficient using reduce
@@ -161,12 +161,12 @@ The launch script then runs the process flows for the production cluster and ana
 
 #### Analytics Task (Calculating TFIDF) Flow
 
-1. Get the data in the reviews (format: "asin, review_text") in the form of a text file
+1. Get the data, reviews (format: "asin, review_text") in the form of a text file
 2. Remove punctuations from the review text and split the text into the form of (review_text_list)
 3. Find the term frequency by assigning each word as the key and counting the number of instances the word pops up using reduceByKey
 4. Find the document frequency by removing all duplicates within each review and then assign each word as the key before counting using reduceByKey
 5. Find the number of reviews by counting the initial number of review_text
-6. Combine the term frequency and document frequency using join
+6. Combine the term frequency and document frequency using join (format: (word, (tf, df)) )
 7. Find the TFIDF by multiplying term frequency with the log(num_of_reviews/document frequency)
 8. Sort the results in descending order
 9. Output the result into a textfile on the hdfs
