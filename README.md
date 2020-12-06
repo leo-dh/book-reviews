@@ -71,6 +71,7 @@ hosted
 Additionally, the two metadata and reviews data files used by the automation scripts are hosted on S3 at https://database-project-public.s3.amazonaws.com/kindle_reviews.csv and https://database-project-public.s3.amazonaws.com/kindle_metadata_stream.json. A JAR file use to ingest data from MongoDB is also hosted at https://leodh.s3.amazonaws.com/MongoImport.jar, the file has been precompiled with the dependencies it requires.
 
 The `frontend` and `server` folders respectively contain the source code for the frontend and Django server.
+The `compiled` folder contains the source code for the jar file `MongoImport.jar` which is used for data ingestion.
 
 ### Architecture
 
