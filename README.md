@@ -145,3 +145,15 @@ The launch script then runs the process flows for the production cluster and ana
 2. The `hadoop_hosts.json` file is updated with the new set of Hadoop node instances.
 3. The IP addresses of the new set of worker nodes are written to the relevant Hadoop and Spark configuration files on the master node.
 4. Finally, the Hadoop cluster is restarted from the master node.
+
+#### Analytics Task (Calculating Pearson Correlation) Flow
+
+1. Get the data in the reviews (format: "asin, review_text") and price data (format: "asin\tprice") in the form of a text file
+2. Remove punctuations from the review text and split the data into the form of (asin, review_text_list) and (asin, price)
+3. For reviews (asin, review_text_list), for each review, find the number of words then find the average review length for each book using reduceByKey
+3. Merge the reviews dff and the price dff using join by their asin key (format: asin, (average_review_length, price))
+4. Filter out all values without either average_review_length or price
+5. Get the mean of the average_review_length and the mean of the price for each book using reduce
+6. Using the pearson correlation coefficient formula, calculate the coefficient using reduce
+7. Output result into a textfile on the hdfs
+8. Grab the result from hdfs and output into a textfile on the namenode server
