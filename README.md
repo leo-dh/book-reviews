@@ -26,6 +26,7 @@ hadoop_volume_size=16
 ```
 
 Once configuration is complete, run the command  `curl https://dbs.xuliang.dev/master/setup.sh | bash` to perform the setup. Setup typically takes about 5-6 minutes.
+Alternatively, to run the setup directly from the repository, run `git clone https://github.com/tyuxiang/Amazon_kindle_DB` and enter the GitHub credentials as prompted. Then, run `cp Amazon_kindle_DB/hosted/master/setup.sh ~/setup.sh && chmod +x setup.sh && ./setup.sh`.
 
 To shut down all systems, run `python3.7 teardown.py`.
 
