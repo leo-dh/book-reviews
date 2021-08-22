@@ -18,6 +18,22 @@ services:
       - db_root_password
       - db_password
 
+  mongo:
+    image: mongo
+    volumes:
+      - ./mongodb/import.sh:/docker-entrypoint-initdb.d/import.sh
+      - ./mongodb/init.js:/docker-entrypoint-initdb.d/init.js
+      - ./mongodb/kindle_metadata_stream.json:/data/mongodb/kindle_metadata_stream.json
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MONGO_INITDB_DATABASE: database
+      MONGO_USER: django
+      MONGO_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_root_password
+      - db_password
+
 secrets:
   db_root_password:
     file: db_root_password.secret.env

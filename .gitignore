@@ -133,3 +133,4 @@ dmypy.json
 
 # Extra Files
 kindle_reviews.csv
+kindle_metadata_stream.json
