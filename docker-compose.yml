@@ -1,0 +1,25 @@
+version: "3"
+services:
+  mysql:
+    image: mysql
+    volumes:
+      - ./mysql/ingestion.sql:/docker-entrypoint-initdb.d/ingestion.sql
+      - ./mysql/kindle_reviews.csv:/var/lib/mysql-files/kindle_reviews.csv
+    ports:
+      - "3306:3306"
+    command:
+      - "--secure-file-priv=/var/lib/mysql-files/"
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MYSQL_DATABASE: reviews
+      MYSQL_USER: django
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_root_password
+      - db_password
+
+secrets:
+  db_root_password:
+    file: db_root_password.secret.env
+  db_password:
+    file: db_password.secret.env

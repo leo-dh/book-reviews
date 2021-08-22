@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Passwords
+*.secret.env
+
+# Extra Files
+kindle_reviews.csv
