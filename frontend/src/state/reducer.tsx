@@ -8,7 +8,7 @@ function reducer(state: IState = initialState, action: IAction): IState {
   let data;
   switch (action.type) {
     case EActionType.UPDATE_PERSISTENT_DATA:
-      data = ((action as unknown) as IActionUpdatePersistence).data;
+      data = (action as unknown as IActionUpdatePersistence).data;
       return {
         ...state,
         persistence: {

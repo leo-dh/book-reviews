@@ -13,6 +13,13 @@ interface ResultListProps {
   loading: boolean;
   style?: CSSProperties;
 }
+
+const decodeHTMLEntities = (str: string) => {
+  const el = document.createElement("span");
+  el.innerHTML = str;
+  return el.innerHTML;
+};
+
 const ResultList: React.FC<ResultListProps> = ({
   pagination,
   dataSource,
@@ -70,7 +77,9 @@ const ResultList: React.FC<ResultListProps> = ({
                   ellipsis={{ rows: 3, expandable: true, symbol: "more" }}
                   style={{ maxWidth: "100%" }}
                 >
-                  {item.description || "No description provided."}
+                  {decodeHTMLEntities(
+                    item.description || "No description provided.",
+                  )}
                 </Paragraph>
               </Skeleton>
             </List.Item>

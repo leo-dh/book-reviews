@@ -38,6 +38,12 @@ enum SortTypes {
   HELPFULNESS,
 }
 
+const decodeHTMLEntities = (str: string) => {
+  const el = document.createElement("span");
+  el.innerHTML = str;
+  return el.innerHTML;
+};
+
 const BookPage: React.FC<BookPageProps> = ({ id }) => {
   const [request, setRequest] = useGetBookDetails(id);
   const [form] = useForm();
@@ -92,7 +98,6 @@ const BookPage: React.FC<BookPageProps> = ({ id }) => {
         text,
       };
     });
-    console.log({ categories });
     const rating =
       reviews.reduce((all, currentValue) => {
         return all + currentValue.overall;
@@ -152,12 +157,9 @@ const BookPage: React.FC<BookPageProps> = ({ id }) => {
             maxWidth: "100%",
           }}
         >
-          <Image
-            src={metadata.imUrl}
-            width={300}
-            height={300}
-            style={{ flex: "0 0 300px", alignSelf: "start" }}
-          />
+          <div style={{ flex: "0 0 300px", alignSelf: "start" }}>
+            <Image src={metadata.imUrl} width={300} height={300} />
+          </div>
           <div
             style={{
               display: "flex",
@@ -190,7 +192,9 @@ const BookPage: React.FC<BookPageProps> = ({ id }) => {
               style={{ marginBottom: "32px", marginTop: "24px" }}
               ellipsis={{ rows: 4, symbol: "more", expandable: true }}
             >
-              {metadata.description || "No description provided."}
+              {decodeHTMLEntities(
+                metadata.description || "No description provided.",
+              )}
             </Paragraph>
             <div>
               {categories.map(category => {

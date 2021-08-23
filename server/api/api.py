@@ -57,7 +57,7 @@ def getnow():
 
 
 def jsonify(data):
-    return JsonResponse(data, JsonEncoder)
+    return JsonResponse(data, JsonEncoder, safe=False)
 
 
 @csrf_exempt

@@ -5,6 +5,7 @@ const a11yOff = Object.keys(require("eslint-plugin-jsx-a11y").rules).reduce(
   },
   {},
 );
+
 module.exports = {
   parser: "@typescript-eslint/parser",
   extends: [

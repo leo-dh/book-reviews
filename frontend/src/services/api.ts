@@ -6,11 +6,7 @@ import {
   IQueryResults,
 } from "../state/types";
 
-let apiUrl = "http://127.0.0.1:8000/api";
-if (typeof window !== 'undefined') {
-  const location = window.location;
-  apiUrl = `${location.protocol}//${location.host}:8000/api`;
-}
+const apiUrl = `${process.env.GATSBY_API_URL}`;
 
 interface IRequest {
   endpoint: string;
@@ -28,10 +24,10 @@ async function makeRequest<T>(
     Object.keys(request.params).forEach((param, ind) => {
       url += `${ind === 0 ? "?" : "&"}${param}=${request.params?.[param]}`;
     });
-  const headers = ({
+  const headers = {
     "Content-Type": "application/json",
     ...request.headers,
-  } as unknown) as Headers;
+  } as HeadersInit;
   try {
     const response = await fetch(url, {
       method,
