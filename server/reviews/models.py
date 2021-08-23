@@ -22,5 +22,8 @@ class Review(models.Model):
     reviewer_id = models.CharField(max_length=32)  # max: 21
     reviewer_name = models.CharField(max_length=64)  # max: 49
 
+    class Meta:
+        db_table = "user_reviews"
+
     def values(self):
         return model_to_dict(self)

@@ -4,12 +4,13 @@ import string
 from types import new_class
 from pymongo import MongoClient
 from pymongo.collection import Collection
+from application.utils import manage_env
 
 client = MongoClient(
-    host=os.getenv("DB_DOCUMENTS_HOST"),
-    username=os.getenv("DB_DOCUMENTS_USER"),
-    password=os.getenv("DB_DOCUMENTS_PASSWORD"),
-    port=int(os.getenv("DB_DOCUMENTS_PORT")),
+    host="mongo",
+    username="django",
+    password=manage_env("MONGO_PASSWORD"),
+    port=27017,
 )
 
 db = client.database
@@ -214,58 +215,3 @@ class Metadata(PropertyHandler, metaclass=Model):
 
 class Log(PropertyHandler, metaclass=Model):
     pass
-
-
-# class Item(models.Model):
-# 	asin = models.CharField(max_length=10) # exact: 10
-
-# 	class Meta:
-# 		abstract = True
-
-# class Related(models.Model):
-# 	bought_together = models.ArrayField(model_container=Item, null=True)
-# 	buy_after_viewing = models.ArrayField(model_container=Item, null=True)
-# 	also_bought = models.ArrayField(model_container=Item, null=True)
-# 	also_viewed = models.ArrayField(model_container=Item, null=True)
-
-# 	class Meta:
-# 		abstract = True
-
-# class Subcategory(models.Model):
-# 	name = models.CharField(max_length=128)
-
-# 	class Meta:
-# 		abstract = True
-
-# class Category(models.Model):
-# 	categories = models.ArrayField(model_container=Subcategory)
-
-# 	class Meta:
-# 		abstract = True
-
-# class SalesRank(models.Model):
-# 	name = models.CharField(max_length=128)
-# 	sales = models.IntegerField()
-
-# 	class Meta:
-# 		abstract = True
-
-
-# class Metadata(models.Model):
-# 	asin = models.CharField(max_length=10) # exact: 10
-# 	title = models.CharField(max_length=256, null=True) # max: 221
-# 	description = models.TextField(null=True)
-# 	price = models.FloatField(null=True)
-# 	im_url = models.CharField(max_length=256, null=True) # max: 172
-# 	related = models.EmbeddedField(model_container=Related, null=True)
-# 	sales_rank = models.EmbeddedField(model_container=SalesRank, null=True)
-# 	brand = models.CharField(max_length=256, null=True) # max: 21
-# 	categories = models.ArrayField(model_container=Category)
-
-# 	def values(self):
-# 		return model_to_dict(self)
-
-
-# class Log(models.Model):
-#     def values(self):
-#         return model_to_dict(self)

@@ -5,8 +5,6 @@ services:
     volumes:
       - ./mysql/ingestion.sql:/docker-entrypoint-initdb.d/ingestion.sql
       - ./mysql/kindle_reviews.csv:/var/lib/mysql-files/kindle_reviews.csv
-    ports:
-      - "3306:3306"
     command:
       - "--secure-file-priv=/var/lib/mysql-files/"
     environment:
@@ -33,6 +31,20 @@ services:
     secrets:
       - db_root_password
       - db_password
+
+  web:
+    build: ./server
+    command: gunicorn -b 0.0.0.0:7000 application.wsgi:application
+    ports:
+      - "7000:7000"
+    environment:
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+      MONGO_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
+    depends_on:
+      - mysql
+      - mongo
 
 secrets:
   db_root_password:

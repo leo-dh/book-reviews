@@ -5,19 +5,35 @@ from datetime import date, datetime, time, timedelta, timezone
 from typing import Dict
 
 import bson
-import numpy as np
-import pandas as pd
+
+# import numpy as np
+# import pandas as pd
 from django.core.exceptions import ValidationError
+from django.core.serializers.json import DjangoJSONEncoder
 from django.http import (
     HttpRequest,
-    HttpResponse,
     HttpResponseBadRequest,
     HttpResponseNotFound,
 )
+from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from documents.models import Log, Metadata
 from reviews.models import Review
+
+
+class JsonEncoder(DjangoJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, bson.objectid.ObjectId):
+            return str(obj)
+        if isinstance(obj, (datetime, date, time)):
+            return obj.isoformat()
+        # if isinstance(obj, np.int64):
+        #     return int(obj)
+        if isinstance(obj, timedelta):
+            return obj.total_seconds()
+        return super().default(obj)
+
 
 def generate_random_string(length: int) -> str:
     letters = string.ascii_uppercase + string.digits
@@ -41,26 +57,14 @@ def getnow():
 
 
 def jsonify(data):
-    def dt_handler(obj):
-        if isinstance(obj, (datetime, date, time)):
-            return obj.isoformat()
-        elif isinstance(obj, np.int64):
-            return int(obj)
-        elif isinstance(obj, timedelta):
-            return obj.total_seconds()
-        elif isinstance(obj, bson.objectid.ObjectId):
-            return str(obj)
-        else:
-            print(type(obj))
-            return None
-
-    return HttpResponse(json.dumps(data, default=dt_handler))
+    return JsonResponse(data, JsonEncoder)
 
 
 @csrf_exempt
 @require_http_methods(["GET"])
 def test(req):
     return jsonify({"status": "OK"})
+
 
 @csrf_exempt
 @require_http_methods(["GET"])
