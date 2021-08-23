@@ -7,7 +7,6 @@ WORKDIR /app
 COPY . .
 
 RUN echo "GATSBY_API_URL=$GATSBY_API_URL\nPATH_PREFIX=$PATH_PREFIX" > .env.production && \
-    cat .env.production && \
     yarn --production && \
     yarn build --prefix-paths
 
