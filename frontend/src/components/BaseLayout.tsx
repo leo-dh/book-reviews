@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Helmet } from "react-helmet";
 import { Input, Layout, Button, Space, Menu, BackTop } from "antd";
 import { navigate, Link } from "gatsby";
 import { useLocation } from "@reach/router";
@@ -23,88 +24,98 @@ const BaseLayout: React.FC<Props> = ({ children, width }) => {
   const location = useLocation();
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Header
-        style={{
-          background: "white",
-          boxShadow: "0 2px 8px #f0f1f2",
-          zIndex: 10,
-        }}
-      >
-        <div
+    <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Book Reviews</title>
+      </Helmet>
+      <Layout style={{ minHeight: "100vh" }}>
+        <Header
           style={{
-            display: "flex",
-            height: "100%",
-            alignItems: "center",
-            justifyContent: "space-between",
+            background: "white",
+            boxShadow: "0 2px 8px #f0f1f2",
+            zIndex: 10,
           }}
-        >
-          <Link to="/">
-            <img
-              src={logo}
-              alt=""
-              style={{ cursor: "pointer", height: "40px" }}
-            />
-          </Link>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <Space size={32}>
-              <Menu mode="horizontal" selectedKeys={[location.pathname]}>
-                <Menu.Item key="/books">
-                  <Link to="/books">Books</Link>
-                </Menu.Item>
-                <Menu.Item key="/genres">
-                  <Link to="/genres">Genres</Link>
-                </Menu.Item>
-              </Menu>
-              <div style={{ display: "flex", position: "relative" }}>
-                <Input
-                  style={{
-                    fontSize: "1em",
-                    height: "100%",
-                    width: "40ch",
-                    borderRadius: "16px",
-                    padding: "4px 48px 4px 16px",
-                  }}
-                  value={queryString}
-                  onChange={e => setQueryString(e.target.value)}
-                  placeholder="Search for a book ..."
-                  onPressEnter={navigateToQuery}
-                />
-                <Button
-                  shape="circle"
-                  type="ghost"
-                  icon={<BsSearch />}
-                  style={{
-                    position: "absolute",
-                    border: "none",
-                    boxShadow: "none",
-                    right: "4px",
-                    top: 0,
-                  }}
-                  onClick={navigateToQuery}
-                />
-              </div>
-            </Space>
-          </div>
-        </div>
-      </Header>
-      <Content style={{ background: "white" }}>
-        <BackTop style={{ bottom: "100px" }} />
-        <div
-          style={{ display: "flex", justifyContent: "center", padding: "32px" }}
         >
           <div
             style={{
               display: "flex",
-              width: width || "1024px",
-              flexDirection: "column",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
-            {children}
+            <Link to="/">
+              <img
+                src={logo}
+                alt=""
+                style={{ cursor: "pointer", height: "40px" }}
+              />
+            </Link>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Space size={32}>
+                <Menu mode="horizontal" selectedKeys={[location.pathname]}>
+                  <Menu.Item key="/books">
+                    <Link to="/books">Books</Link>
+                  </Menu.Item>
+                  <Menu.Item key="/genres">
+                    <Link to="/genres">Genres</Link>
+                  </Menu.Item>
+                </Menu>
+                <div style={{ display: "flex", position: "relative" }}>
+                  <Input
+                    style={{
+                      fontSize: "1em",
+                      height: "100%",
+                      width: "40ch",
+                      borderRadius: "16px",
+                      padding: "4px 48px 4px 16px",
+                    }}
+                    value={queryString}
+                    onChange={e => setQueryString(e.target.value)}
+                    placeholder="Search for a book ..."
+                    onPressEnter={navigateToQuery}
+                  />
+                  <Button
+                    shape="circle"
+                    type="ghost"
+                    icon={<BsSearch />}
+                    style={{
+                      position: "absolute",
+                      border: "none",
+                      boxShadow: "none",
+                      right: "4px",
+                      top: 0,
+                    }}
+                    onClick={navigateToQuery}
+                  />
+                </div>
+              </Space>
+            </div>
           </div>
-        </div>
-      </Content>
-    </Layout>
+        </Header>
+        <Content style={{ background: "white" }}>
+          <BackTop style={{ bottom: "100px" }} />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              padding: "32px",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                width: width || "1024px",
+                flexDirection: "column",
+              }}
+            >
+              {children}
+            </div>
+          </div>
+        </Content>
+      </Layout>
+    </>
   );
 };
 export default BaseLayout;

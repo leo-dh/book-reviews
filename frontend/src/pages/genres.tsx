@@ -1,8 +1,8 @@
 import React from "react";
 import { Provider } from "react-redux";
 import { store } from "../state/store";
-import GenresPage from "../components/genrespage";
 import BaseLayout from "../components/BaseLayout";
+import GenresPage from "../components/genrespage";
 
 const Page: React.FC = () => {
   return (

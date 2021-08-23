@@ -1,9 +1,11 @@
 import React from "react";
-import { Result, Button } from "antd";
 import { Provider } from "react-redux";
-import { navigate } from "gatsby";
 import { store } from "../state/store";
 import BaseLayout from "../components/BaseLayout";
+// eslint-disable-next-line import/order
+import { Result, Button } from "antd";
+// eslint-disable-next-line import/order
+import { navigate } from "gatsby";
 
 const Page: React.FC = () => {
   return (
