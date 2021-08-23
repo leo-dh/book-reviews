@@ -1,0 +1,26 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+asgiref = "*"
+django-cors-headers = "*"
+gunicorn = "==20.0.4"
+pymongo = "*"
+python-dateutil = "*"
+python-dotenv = "*"
+pytz = "*"
+tqdm = "*"
+Django = "*"
+PyMySQL = "*"
+cryptography = "*"
+
+[dev-packages]
+black = "==21.5b0"
+
+[requires]
+python_version = "3.9"
+
+[scripts]
+generate = "bash -c \"pipenv lock -r > requirements.txt\""
