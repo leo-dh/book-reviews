@@ -5,8 +5,7 @@ services:
     volumes:
       - ./mysql/ingestion.sql:/docker-entrypoint-initdb.d/ingestion.sql
       - ./mysql/kindle_reviews.csv:/var/lib/mysql-files/kindle_reviews.csv
-    command:
-      - "--secure-file-priv=/var/lib/mysql-files/"
+      - ./mysql/low_mem.cnf:/etc/mysql/conf.d/low_mem.cnf
     environment:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
       MYSQL_DATABASE: reviews

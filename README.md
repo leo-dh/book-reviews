@@ -9,7 +9,7 @@ Files to create:
    ```sh
    # ./server/.env
    SECRET_KEY=abcdef...
-   ALLOWED_HOST=subdomain1.domain.com,subdomain2.domain.com
+   ALLOWED_HOSTS=subdomain1.domain.com,subdomain2.domain.com
    ```
 
 2. `db_password.secret.env` in root folder
