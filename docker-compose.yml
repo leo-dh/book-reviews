@@ -54,7 +54,6 @@ services:
       - django_secret_key
     depends_on:
       - mysql
-      - mongo
 
   nginx:
     build:

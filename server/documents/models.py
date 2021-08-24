@@ -10,7 +10,7 @@ client = MongoClient(
     MONGO_URI.format(user="django", password=manage_env("MONGO_PASSWORD"))
 )
 
-db = client.database
+db = client.bookreviews
 
 
 class QuerySet:

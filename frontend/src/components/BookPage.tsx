@@ -40,7 +40,7 @@ enum SortTypes {
 
 const decodeHTMLEntities = (str: string) => {
   const el = document.createElement("span");
-  el.innerHTML = str;
+  el.innerHTML = str.replace(/&nbsp;/g, " ");
   return el.innerHTML;
 };
 
