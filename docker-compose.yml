@@ -6,6 +6,7 @@ services:
       - ./mysql/ingestion.sql:/docker-entrypoint-initdb.d/ingestion.sql
       - ./mysql/kindle_reviews.csv:/var/lib/mysql-files/kindle_reviews.csv
       - ./mysql/low_mem.cnf:/etc/mysql/conf.d/low_mem.cnf
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
       MYSQL_DATABASE: reviews
@@ -21,6 +22,12 @@ services:
       - ./mongodb/import.sh:/docker-entrypoint-initdb.d/import.sh
       - ./mongodb/init.js:/docker-entrypoint-initdb.d/init.js
       - ./mongodb/kindle_metadata_stream.json:/data/mongodb/kindle_metadata_stream.json
+    restart: always
+    command: --wiredTigerCacheSizeGB 0.25
+    deploy:
+      resources:
+        limits:
+          memory: 300M
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongoadmin
       MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
@@ -34,6 +41,7 @@ services:
   api:
     build: ./server
     command: gunicorn -b 0.0.0.0:7000 application.wsgi:application
+    restart: always
     environment:
       MYSQL_PASSWORD_FILE: /run/secrets/db_password
       MONGO_PASSWORD_FILE: /run/secrets/db_password
@@ -48,8 +56,9 @@ services:
       context: ./frontend
       dockerfile: ../nginx/Dockerfile
       args:
-        GATSBY_API_URL: /api
-        # PATH_PREFIX: lol
+        GATSBY_API_URL: /bookreviews/api
+        # PATH_PREFIX: /bookreviews
+    restart: always
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
     ports:
