@@ -51,6 +51,7 @@ services:
       ALLOWED_HOSTS: ${ALLOWED_HOSTS}
     secrets:
       - db_password
+      - django_secret_key
     depends_on:
       - mysql
       - mongo

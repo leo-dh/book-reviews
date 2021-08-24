@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3c43779bd58e9ae42c4849811c3b54f99c21580e303d5c40816fc401081357b9"
+            "sha256": "3d792359bc8698aeb9cfafc5cd59af1b2e967660d9447e3f6aa27032cc35907f"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -110,6 +110,13 @@
             "index": "pypi",
             "version": "==3.8.0"
         },
+        "dnspython": {
+            "hashes": [
+                "sha256:36c5e8e38d4369a08b6780b7f27d790a292b2b08eea01607865bf0936c558e01",
+                "sha256:f69c21288a962f4da86e56c4905b49d11aba7938d3d740e80d9e366ee4f1632d"
+            ],
+            "version": "==1.16.0"
+        },
         "gunicorn": {
             "hashes": [
                 "sha256:1904bb2b8a43658807108d59c3f3d56c2b6121a701161de0ddf9ad140073c626",
@@ -127,6 +134,9 @@
             "version": "==2.20"
         },
         "pymongo": {
+            "extras": [
+                "srv"
+            ],
             "hashes": [
                 "sha256:02dc0b0f48ed3cd06c13b7e31b066bf91e00dac5f8147b0a0a45f9009bfab857",
                 "sha256:053b4ebf91c7395d1fcd2ce6a9edff0024575b7b2de6781554a4114448a8adc9",
@@ -280,11 +290,11 @@
         },
         "tqdm": {
             "hashes": [
-                "sha256:07856e19a1fe4d2d9621b539d3f072fa88c9c1ef1f3b7dd4d4953383134c3164",
-                "sha256:35540feeaca9ac40c304e916729e6b78045cbbeccd3e941b2868f09306798ac9"
+                "sha256:80aead664e6c1672c4ae20dc50e1cdc5e20eeff9b14aa23ecd426375b28be588",
+                "sha256:a4d6d112e507ef98513ac119ead1159d286deab17dffedd96921412c2d236ff5"
             ],
             "index": "pypi",
-            "version": "==4.62.1"
+            "version": "==4.62.2"
         }
     },
     "develop": {
