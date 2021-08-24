@@ -28,12 +28,12 @@ parts. Docker containers are used to replace the multiple AWS instances.
 Put the `kindle_reviews.csv` file in the `mysql` folder and the
 `kindle_metadata_stream.json` file in the `mongodb` folder.
 
-The data has was originally obtained from
+The data was originally obtained from
 [here](https://nijianmo.github.io/amazon/index.html). It has been trimmed to a
 large extent as the purpose was just to display some data.
 
-> **NOTE:** The dataset has not been cleaned and processed in any way. Most
-> books are missing key information like title and author. Placeholder/default
+> **NOTE:** The dataset has not been cleaned or processed in any way. Most
+> books are missing key information like title and/or author. Placeholder/default
 > values have to be used.
 
 ### Files to create
