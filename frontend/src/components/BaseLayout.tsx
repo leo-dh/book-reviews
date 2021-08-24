@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { Input, Layout, Button, Space, Menu, BackTop } from "antd";
-import { navigate, Link } from "gatsby";
+import { navigate, Link, withPrefix } from "gatsby";
 import { useLocation } from "@reach/router";
 import { BsSearch } from "react-icons/bs";
 import logo from "../images/nile_dark.svg";
@@ -28,6 +28,11 @@ const BaseLayout: React.FC<Props> = ({ children, width }) => {
       <Helmet>
         <meta charSet="utf-8" />
         <title>Book Reviews</title>
+        <link
+          rel="shortcut icon"
+          href={withPrefix("favicon.ico")}
+          type="image/x-icon"
+        />
       </Helmet>
       <Layout style={{ minHeight: "100vh" }}>
         <Header
