@@ -16,27 +16,28 @@ services:
       - db_root_password
       - db_password
 
-  mongo:
-    image: mongo
-    volumes:
-      - ./mongodb/import.sh:/docker-entrypoint-initdb.d/import.sh
-      - ./mongodb/init.js:/docker-entrypoint-initdb.d/init.js
-      - ./mongodb/kindle_metadata_stream.json:/data/mongodb/kindle_metadata_stream.json
-    restart: always
-    command: --wiredTigerCacheSizeGB 0.25
-    deploy:
-      resources:
-        limits:
-          memory: 300M
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: mongoadmin
-      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
-      MONGO_INITDB_DATABASE: database
-      MONGO_USER: django
-      MONGO_PASSWORD_FILE: /run/secrets/db_password
-    secrets:
-      - db_root_password
-      - db_password
+  # Moved local MongoDB to Cloud cause I can't stand the high memory usage
+  # mongo:
+  #   image: mongo
+  #   volumes:
+  #     - ./mongodb/import.sh:/docker-entrypoint-initdb.d/import.sh
+  #     - ./mongodb/init.js:/docker-entrypoint-initdb.d/init.js
+  #     - ./mongodb/kindle_metadata_stream.json:/data/mongodb/kindle_metadata_stream.json
+  #   restart: always
+  #   command: --wiredTigerCacheSizeGB 0.25
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 300M
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: mongoadmin
+  #     MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+  #     MONGO_INITDB_DATABASE: database
+  #     MONGO_USER: django
+  #     MONGO_PASSWORD_FILE: /run/secrets/db_password
+  #   secrets:
+  #     - db_root_password
+  #     - db_password
 
   api:
     build: ./server
@@ -45,6 +46,9 @@ services:
     environment:
       MYSQL_PASSWORD_FILE: /run/secrets/db_password
       MONGO_PASSWORD_FILE: /run/secrets/db_password
+      SECRET_KEY_FILE: /run/secrets/django_secret_key
+      MONGO_URI: ${MONGO_URI}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS}
     secrets:
       - db_password
     depends_on:
@@ -56,8 +60,8 @@ services:
       context: ./frontend
       dockerfile: ../nginx/Dockerfile
       args:
-        GATSBY_API_URL: /bookreviews/api
-        # PATH_PREFIX: /bookreviews
+        GATSBY_API_URL: ${GATSBY_API_URL}
+        PATH_PREFIX: ${PATH_PREFIX}
     restart: always
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
@@ -71,3 +75,5 @@ secrets:
     file: db_root_password.secret.env
   db_password:
     file: db_password.secret.env
+  django_secret_key:
+    file: django_secret_key.secret.env

@@ -1,16 +1,13 @@
-import os
 import random
 import string
-from types import new_class
+
+from application.utils import manage_env
 from pymongo import MongoClient
 from pymongo.collection import Collection
-from application.utils import manage_env
 
+MONGO_URI = manage_env("MONGO_URI")
 client = MongoClient(
-    host="mongo",
-    username="django",
-    password=manage_env("MONGO_PASSWORD"),
-    port=27017,
+    MONGO_URI.format(user="django", password=manage_env("MONGO_PASSWORD"))
 )
 
 db = client.database

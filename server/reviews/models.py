@@ -1,8 +1,6 @@
-from django.db import models
-from django.db.models import fields
-from django.forms.models import ModelForm, model_to_dict
-from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.db import models
+from django.forms.models import model_to_dict
 
 
 def overall_validator(value):
